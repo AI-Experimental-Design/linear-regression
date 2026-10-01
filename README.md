@@ -18,7 +18,7 @@ data generated from knows values of $w$ the line $y=2x+1$ with noise
 
 | $y=0.5x+3$ no noise | $y=2x+1$ no noise | $y=2x+1$ some noise  |$y=2x+1$ more noise |
 | - | - | - | - |
-| <img src="line_0.5x_3_no_noise.png"> | <img src="line_2x_1_no_noise.png"> | <img src="line_2x_1_1.5_noise.png"> | <img src="line_2x_1_5_noise.png"> |
+| <img src="img/line_0.5x_3_no_noise.png"> | <img src="img/line_2x_1_no_noise.png"> | <img src="img/line_2x_1_1.5_noise.png"> | <img src="img/line_2x_1_5_noise.png"> |
 
 
 <details>
