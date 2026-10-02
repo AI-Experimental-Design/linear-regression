@@ -31,7 +31,7 @@ more noise, the line gets harder to see.
 | $y=0.5x+3$ | 0   | <img src="img/line_0.5x_3_no_noise.png" height="250"> |
 | $y=2x+1$   | 0   | <img src="img/line_2x_1_no_noise.png" height="250">   |
 | $y=2x+1$   | 1.5 | <img src="img/line_2x_1_1.5_noise.png" height="250">  |
-| $y=2x+1$   | 5   | <img src="img/line_2x_1_5_noise.png" height=2150">    |
+| $y=2x+1$   | 5   | <img src="img/line_2x_1_5_noise.png" height=250">    |
 
 <details>
 
@@ -72,7 +72,9 @@ tail -n +2 out/line_2x_1_no_noise.tsv \
     --markerfacecolor tab:blue \
     --width 3 \
     --height 2.5 \
-    --line_style o
+    --line_style o \
+    --y_min 0 --y_max 10 \
+    --x_min 0 --x_max 10 
 
 python src/make_line_dataset.py \
     -w 2 \
