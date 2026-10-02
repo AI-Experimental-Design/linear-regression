@@ -1,15 +1,26 @@
 # Linear Regression
 
-- State the basic idea of learning a function from data to help use predict values we dont have data for
-- Give a few examples
-- Linear regression is the most basic learning task
-- Fitting a straight line ($y = wx + b$, we are intetionally using $w$ ineaste of the more traditional $m$ to better align with future lesons) to data
-- learning two parmaters, the slope $w$  and $y$-intercets $b$
-- The process is start with a random asignment of values to the parameters
-measure how well that line and those paramters fit the data then update the
-paramters to improve the fit.
+Most of the models in this course do the same basic job. They learn a function
+from examples where we know the answer, then use that function to predict
+answers we don't have. A few examples follow.
 
-## Training
+- Predicting the lowest pitch a primate can produce from the length of its
+  vocal folds.
+- Predicting a person's height from their genotype.
+- Predicting whether a missense variant is pathogenic from a conservation
+  score.
+- Predicting gene expression from DNA sequence, which is what Enformer and
+  AlphaGenome do at a much larger scale.
+
+Linear regression is the simplest version of this task. It fits a straight line
+to data.
+
+$$y = wx + b$$
+
+You may have seen this written as $y = mx + b$. We use $w$ because it is the
+weight of a digital neuron, and it keeps the same name through the rest of the
+course. The model has two parameters to learn, the slope $w$ and the
+$y$-intercept $b$.
 
 Training starts with a guess for the model parameters. We measure how well the
 guess fits the data, adjust the parameters to improve it, and repeat. We stop
@@ -18,24 +29,24 @@ Ideally that is also the point where the model fits well. It doesn't have to
 be. A model can stop improving because it has found the best answer it can
 reach, even if that answer is still poor.
 
-### Data
+## Data
 
-We start with synthetic data, where we choose the line ahead of time.  Because
+We start with synthetic data, where we choose the line ahead of time. Because
 we know what $w$ and $b$ should be, we can check whether training finds them.
-Each dataset has 50 points where noise is random scatter added to each $y$
-value. With no noise, every point falls exactly on the line. With
-more noise, the line gets harder to see.
+Each dataset has 50 points. Noise is random scatter added to each $y$ value.
+With no noise, every point falls exactly on the line. With more noise, the line
+gets harder to see.
 
 | Generating function | Noise (sd) | Plot |
 |-|-|-|
 | $y=0.5x+3$ | 0   | <img src="img/line_0.5x_3_no_noise.png" height="250"> |
-| $y=2x+1$   | 0   | <img src="img/line_2x_1_no_noise.png"   height="250">   |
-| $y=2x+1$   | 1.5 | <img src="img/line_2x_1_1.5_noise.png"  height="250">  |
-| $y=2x+1$   | 5   | <img src="img/line_2x_1_5_noise.png"    height="250">    |
+| $y=2x+1$   | 0   | <img src="img/line_2x_1_no_noise.png" height="250"> |
+| $y=2x+1$   | 1.5 | <img src="img/line_2x_1_1.5_noise.png" height="250"> |
+| $y=2x+1$   | 5   | <img src="img/line_2x_1_5_noise.png" height="250"> |
 
 <details>
 
-```
+```bash
 python src/make_line_dataset.py \
     --w 0.5 \
     --b 3 \
@@ -52,7 +63,7 @@ tail -n +2 out/line_0.5x_3_no_noise.tsv \
     --markerfacecolor tab:blue \
     --width 3 \
     --height 2.5 \
-    --line_style o 
+    --line_style o
 
 python src/make_line_dataset.py \
     --w 2 \
@@ -70,7 +81,7 @@ tail -n +2 out/line_2x_1_no_noise.tsv \
     --markerfacecolor tab:blue \
     --width 3 \
     --height 2.5 \
-    --line_style o 
+    --line_style o
 
 python src/make_line_dataset.py \
     --w 2 \
@@ -107,7 +118,6 @@ tail -n +2 out/line_2x_1_5_noise.tsv \
     --width 3 \
     --height 2.5 \
     --line_style o
-
 ```
 
 </details>
@@ -116,27 +126,33 @@ tail -n +2 out/line_2x_1_5_noise.tsv \
 
 To judge how well a line fits the data, we measure the distance from each point
 to the line and combine those distances into one number. The distance we use is
-vertical, the gap between the observed $y$ and the line's prediction $\hat{y} =
-wx + b$. That gap is called the residual. Squaring each residual and taking the
-mean gives the mean squared error (MSE).
+vertical, the gap between the observed $y$ and the line's prediction
+$\hat{y} = wx + b$. That gap is called the residual. Squaring each residual and
+taking the mean gives the mean squared error (MSE).
 
 $$\text{MSE} = \frac{1}{n}\sum_{i=1}^{n}(\hat{y}_i - y_i)^2$$
 
 A function that scores a model's predictions like this is called a loss
 function. A lower loss means a better fit, and a perfect line has a loss of 0.
 
-Suppose we pick the line $y=05.x+8$, then the loss for the different data sets would be
+Suppose we guess the line $y = 0.5x + 8$. Its loss on each dataset is below.
+The red lines are the residuals.
 
-| MSE | Plot|
-|-|-|
-| 25.0    | <img src="img/line_0.5x_3_no_noise.residuals.png" height="250"> |
-| 19.9273 | <img src="img/line_2x_1_no_noise.residuals.png" height="250"> | 
-| 24.3077 | <img src="img/line_2x_1_1.5_noise.residuals.png" height="250"> |
-| 52.3390 | <img src="img/line_2x_1_5_noise.residuals.png" height="250"> |
+| Data | MSE | Plot |
+|-|-|-|
+| $y=0.5x+3$, no noise | 25.0000 | <img src="img/line_0.5x_3_no_noise.residuals.png" height="250"> |
+| $y=2x+1$, no noise   | 19.9273 | <img src="img/line_2x_1_no_noise.residuals.png" height="250"> |
+| $y=2x+1$, noise 1.5  | 24.3077 | <img src="img/line_2x_1_1.5_noise.residuals.png" height="250"> |
+| $y=2x+1$, noise 5    | 52.3390 | <img src="img/line_2x_1_5_noise.residuals.png" height="250"> |
+
+On the first dataset the guess has the right slope but sits 5 too high, so
+every residual is 5 and the loss is exactly $5^2 = 25$. On the other three the
+data all come from $y = 2x + 1$, and the same guess scores worse as the noise
+grows.
 
 <details>
 
-```
+```bash
 for data in out/line_0.5x_3_no_noise.tsv out/line_2x_1_1.5_noise.tsv out/line_2x_1_5_noise.tsv out/line_2x_1_no_noise.tsv; do
     echo $data
 
@@ -154,9 +170,8 @@ for data in out/line_0.5x_3_no_noise.tsv out/line_2x_1_1.5_noise.tsv out/line_2x
         --residuals \
         -o img/${base}.residuals.png \
         -x x \
-        -y y 
+        -y y
 done
-
 out/line_0.5x_3_no_noise.tsv
 mse=25.0000
 out/line_2x_1_1.5_noise.tsv
@@ -169,12 +184,11 @@ mse=19.9273
 
 </details>
 
-
-## Updating paramters
+## Updating parameters
 
 To improve the line we need to know which direction to move $w$ and $b$. We
-could do this by nudging each parameter up and down by a small amount and see
-what happens to the loss.
+could do this by nudging each parameter up and down by a small amount and
+seeing what happens to the loss. Here we use the data with noise 1.5.
 
 | change | w | b | MSE | vs. start |
 |-|-|-|-|-|
@@ -184,12 +198,12 @@ what happens to the loss.
 | b + 0.1 | 0.500 | 8.100 | 24.1272 | -0.1805 |
 | b - 0.1 | 0.500 | 7.900 | 24.5081 | +0.2004 |
 
-Increasing $w$ lowers the loss the most, and increasing $b$ lowers less.  In
-the next step we should increase both should go up, ith $w$ mattering the most.
+Increasing $w$ lowers the loss a lot, and increasing $b$ lowers it a little. So
+both should go up, and $w$ matters more.
 
 <details>
 
-```
+```bash
 data=out/line_2x_1_1.5_noise.tsv
 python src/line_loss.py \
     --data $data \
@@ -227,23 +241,24 @@ echo "24.1272-24.3077" | bc
 python src/line_loss.py \
     --data $data \
     --w 0.5 \
-    --b 7.9 
+    --b 7.9
 mse=24.5081
 
 echo "24.5081-24.3077" | bc
 .2004
-
 ```
 
 </details>
 
-The derivative of the Loss gives us the same result without all of the trials.
+The derivative of the loss gives us the same answer without all of the trials.
+Here the loss $L$ is the MSE.
 
 $$\frac{\partial L}{\partial w} = \frac{1}{n}\sum 2(\hat{y}_i - y_i)\,x_i \qquad \frac{\partial L}{\partial b} = \frac{1}{n}\sum 2(\hat{y}_i - y_i)$$
 
 <details>
 
-Our Loss fucntion is MSE, which  averages the squared residual over all $n$ points.
+Our loss function is MSE, which averages the squared residual over all $n$
+points.
 
 $$\text{MSE} = \frac{1}{n}\sum_{i=1}^{n}(\hat{y}_i - y_i)^2$$
 
@@ -272,30 +287,24 @@ $$\frac{\partial\,\text{MSE}}{\partial w} = \frac{1}{n}\sum_{i=1}^{n}2(wx_i + b 
 
 </details>
 
-Together these two numbers are the gradient. By plugging all of the data points
-we get $-36.85$ and $-1.90$. A negative value means increasing that parameter
-lowers the loss, which matches the table. 
+Together these two numbers are the gradient. Plugging in all of the data points
+gives $-36.85$ and $-1.90$. A negative value means increasing that parameter
+lowers the loss, which matches the table. The $w$ gradient is much larger
+because each point's term is multiplied by $x_i$. Changing $w$ tilts the line,
+and points far from $x = 0$ move the most.
 
 <details>
 
-- The prediction, $\hat{y}_i = 0.5x_i + 8$.
-- The residual, $\hat{y}_i - y_i$.
-- That point's term for $w$, $2(\hat{y}_i - y_i)\,x_i$.
-- That point's term for $b$, $2(\hat{y}_i - y_i)$.
+For each point we compute
 
-Average each set of terms over the 50 points.
+- the prediction, $\hat{y}_i = 0.5x_i + 8$
+- the residual, $\hat{y}_i - y_i$
+- that point's term for $w$, $2(\hat{y}_i - y_i)\,x_i$
+- that point's term for $b$, $2(\hat{y}_i - y_i)$
 
-| $i$ | $x_i$ | $y_i$ | $\hat{y}_i$ | residual | $2(\hat{y}_i - y_i)x_i$ | $2(\hat{y}_i - y_i)$
-|-|-|-|-|-|-|-|
-| 1 | 6.37 | 14.28 | 11.18 | -3.09 | -39.37 | -6.18 |
-| 2 | 2.70 | 4.58  | 9.35  | 4.77  | 25.71  | 9.53  |
-| 3 | 0.41 | 1.81  | 8.20  | 6.39  | 5.24   | 12.78 |
-| 4 | 0.17 | 2.32  | 8.08  | 5.77  | 1.91   | 11.53 |
-| 5 | 8.13 | 15.33 | 12.07 | -3.27 | -53.13 | -6.53 |
-|...| | | | | | |
-|mean| | | | | -36.85 | -1.90 |
+and then average each set of terms over the 50 points.
 
-```
+```bash
 python src/line_gradient.py \
     --data out/line_2x_1_1.5_noise.tsv \
     --w 0.5 \
@@ -317,10 +326,12 @@ dL/dw=-36.8518 dL/db=-1.9047
 ### Gradient descent
 
 Gradient descent repeats these steps many times.
+
 1. Predict $\hat{y}$ for every $x$ with the current $w$ and $b$.
 2. Compute the loss.
 3. Compute the gradient.
 4. Move each parameter a small step against its gradient.
+
 $$w \leftarrow w - \eta \frac{\partial L}{\partial w} \qquad b \leftarrow b - \eta \frac{\partial L}{\partial b}$$
 
 The step size $\eta$ is the learning rate. Each pass through the data is one
@@ -333,51 +344,51 @@ $$w = 0.5 - (0.02 \times -36.8518) = 1.237 \qquad b = 8 - (0.02 \times -1.9047) 
 Both gradients are negative, so both parameters go up. $w$ moves about 20 times
 as far as $b$ because its gradient is about 20 times larger.
 
-
 ## Training
 
-
 We now run gradient descent on two of the datasets from above. Both came from
-the same line, $y = 2x + 1$, one with a little noise (1.5) and one with a lot
-(5). Both runs start from the same poor guess ($w = 0.5$, $b = 8$), use the
-same learning rate (0.02), and train for 500 epochs. At each epoch the script
-records the loss, $w$ and $b$, so we can watch the line improve. Since we know
-the true line, we can also see how close training gets to it, and how noise
-changes the answer.
+the same line, $y = 2x + 1$, one with a little noise (1.5) and one with more
+(5). Both runs start from the same initial values ($w = 0.5$, $b = 8$), use the
+same learning rate (0.02), and train for 500 epochs.
 
 On the data with noise 1.5, the loss falls from 24.31 to 2.24. In the first two
 epochs $w$ overshoots and swings back, because its gradient is large. After
-that $w$ settles near 2 within a few dozen epochs, while $b$ creeps down from 8
-over hundreds of epochs. By epoch 500 the line is $w = 2.07$, $b = 0.71$. The
-loss has leveled out, but $b$ is still drifting slowly.
+that $w$ settles near 2 quickly, while $b$ creeps down from 8 over hundreds of
+epochs. By epoch 500 the line is $w = 2.07$, $b = 0.71$. The loss has leveled
+out, but $b$ is still drifting slowly.
 
-On the data with noise 5, training follows a very similar path. The overshoot,
-the quick settling of $w$ and the slow crawl of $b$ all show up again. The main
+With noise 5, training follows a very similar path. The overshoot, the quick
+settling of $w$ and the slow descent of $b$ all show up again. The main
 difference is where training ends. The loss falls from 52.34 to 24.84, and by
 epoch 500 the line is $w = 2.25$, $b = -0.13$.
 
 Neither model lands on the true line ($w = 2$, $b = 1$), and the noisier data
-ends up further from it. 
+ends up further from it. Gradient descent finds the line that best fits these
+50 points, and with noisy data that is not the same as the line that made them.
 
-| Noise | Loss | w,b |
+| Noise | Loss | $w$, $b$ |
 |-|-|-|
 | 1.5 | <img src="img/line_2x_1_1.5_noise.params.training.png" height="250"> | <img src="img/line_2x_1_1.5_noise.params.png" height="250"> |
-| 5 | <img src="img/line_2x_1_5_noise.params.training.png" height="250"> | <img src="img/line_2x_1_5_noise.params.png" height="250"> |
+| 5   | <img src="img/line_2x_1_5_noise.params.training.png" height="250"> | <img src="img/line_2x_1_5_noise.params.png" height="250"> |
 
-The line during training, for the data with noise 1.5.
+We can also watch the line during training, here for the data with noise 1.5.
+In the first two epochs it tilts sharply, overshoots, and tilts back, as $w$
+jumps from 0.5 to 1.24 and then back to 0.90. After that the slope barely
+changes, and the line slides slowly down toward the points as $b$ falls from 8
+to 0.71.
 
 | Epoch | Fit |
 |-|-|
-| 0 | <img src="img/line_2x_1_1.5_noise.epoch_0.residuals.png" height="150"> |
-| 1 | <img src="img/line_2x_1_1.5_noise.epoch_1.residuals.png" height="150"> |
-| 2 | <img src="img/line_2x_1_1.5_noise.epoch_2.residuals.png" height="150"> |
-| 10 | <img src="img/line_2x_1_1.5_noise.epoch_10.residuals.png" height="150"> |
+| 0   | <img src="img/line_2x_1_1.5_noise.epoch_0.residuals.png" height="150"> |
+| 1   | <img src="img/line_2x_1_1.5_noise.epoch_1.residuals.png" height="150"> |
+| 2   | <img src="img/line_2x_1_1.5_noise.epoch_2.residuals.png" height="150"> |
+| 10  | <img src="img/line_2x_1_1.5_noise.epoch_10.residuals.png" height="150"> |
 | 100 | <img src="img/line_2x_1_1.5_noise.epoch_100.residuals.png" height="150"> |
 | 500 | <img src="img/line_2x_1_1.5_noise.epoch_500.residuals.png" height="150"> |
 
 <details>
 
-```
+```bash
 python src/train_line.py \
     --data out/line_2x_1_1.5_noise.tsv \
     --w0 0.5 \
@@ -411,6 +422,7 @@ python src/plot_training.py \
     --columns w,b \
     --title "w and b over training"
 
+# needs csvkit (pip install csvkit)
 for epoch in $(cat out/line_2x_1_1.5_noise.params.tsv | csvcut -K 1 -t -c epoch,w,b | tail -n+2); do
     e=$(echo $epoch | cut -d "," -f 1)
     w=$(echo $epoch | cut -d "," -f 2)
@@ -427,7 +439,6 @@ for epoch in $(cat out/line_2x_1_1.5_noise.params.tsv | csvcut -K 1 -t -c epoch,
         -x x \
         -y y
 done
-
 
 python src/train_line.py \
     --data out/line_2x_1_5_noise.tsv \
@@ -447,6 +458,7 @@ epoch 0100 mse=27.3836 w=+1.779 b=+3.085 dL/dw=-0.221 dL/db=+1.514
 epoch 0200 mse=25.2375 w=+2.070 b=+1.099 dL/dw=-0.088 dL/db=+0.602
 epoch 0300 mse=24.8981 w=+2.185 b=+0.309 dL/dw=-0.035 dL/db=+0.239
 epoch 0500 mse=24.8359 w=+2.250 b=-0.130 dL/dw=-0.006 dL/db=+0.038
+wrote out/line_2x_1_5_noise.params.tsv
 
 python src/plot_training.py \
     -i out/line_2x_1_5_noise.params.tsv \
