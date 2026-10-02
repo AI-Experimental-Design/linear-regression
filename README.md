@@ -316,18 +316,13 @@ dL/dw=-36.8518 dL/db=-1.9047
 
 ### Gradient descent
 
-Gradient descent repeats these steps every epcho
+Gradient descent repeats these steps many times:
 1. Predict $\hat{y}$ for every $x$ with the current $w$ and $b$.
 2. Compute the loss.
 3. Compute the gradient.
-4. Move each parameter a small step against its gradient.
-
-$$w \leftarrow w - \eta \frac{\partial L}{\partial w} \qquad b \leftarrow b - \eta \frac{\partial L}{\partial b}$$
+4. Move each parameter a small step against its gradient, so $w = w - \eta \frac{\partial L}{\partial w}$ and $b = b - \eta \frac{\partial L}{\partial b}$
 
 The step size $\eta$ is the learning rate. Each pass through the data is one
 epoch. Here we use a learning rate of 0.02 and train for 500 epochs.
 
-- Parameters: $w$ and $b$, the two numbers training changes.
-- Loss: MSE, the score training tries to lower.
-- Learning rate: 0.02, how far each step moves the parameters.
-- Epoch: one pass through all 50 points, followed by one update.
+
