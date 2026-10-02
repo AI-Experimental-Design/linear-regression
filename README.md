@@ -1,5 +1,14 @@
 # Linear Regression
 
+## Learning goals
+
+After this module you should be able to
+
+1. Explain what it means to learn a function from data. 
+2. Describe how gradient descent uses a loss to train a model.
+
+## Introduction
+
 
 The goal of machine learning is to use the examples we have to make predictions
 about things we have not observed. For example, we might use a person’s age to
