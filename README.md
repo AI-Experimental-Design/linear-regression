@@ -26,12 +26,12 @@ Each dataset has 50 points where noise is random scatter added to each $y$
 value. With no noise, every point falls exactly on the line. With
 more noise, the line gets harder to see.
 
-| Generating fucntion | noise | Plot|
+| Generating function | Noise (sd) | Plot |
 |-|-|-|
-| $y=0.5x+3$ | 0   | <img src="img/line_0.5x_3_no_noise.png" height="2in"> |
-| $y=2x+1$   | 0   | <img src="img/line_2x_1_no_noise.png" height="2in">   |
-| $y=2x+1$   | 1.5 | <img src="img/line_2x_1_1.5_noise.png" height="2in">  | 
-| $y=2x+1$   | 5   | <img src="img/line_2x_1_5_noise.png" height="2in">   |
+| $y=0.5x+3$ | 0   | <img src="img/line_0.5x_3_no_noise.png" height="150"> |
+| $y=2x+1$   | 0   | <img src="img/line_2x_1_no_noise.png" height="150">   |
+| $y=2x+1$   | 1.5 | <img src="img/line_2x_1_1.5_noise.png" height="150">  |
+| $y=2x+1$   | 5   | <img src="img/line_2x_1_5_noise.png" height="150">    |
 
 <details>
 
