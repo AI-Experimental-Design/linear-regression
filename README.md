@@ -238,11 +238,41 @@ echo "24.5081-24.3077" | bc
 
 </details>
 
-The derivative gives the same answer without the guessing. It is the slope of
-the loss with respect to each parameter, which is what the nudge experiment
-estimates. For MSE:
+We can get to the same result without all of the rials using the derivative of
+the Loss. It is the slope of the loss with respect to each parameter.
 
 $$\frac{\partial L}{\partial w} = \frac{1}{n}\sum 2(\hat{y}_i - y_i)\,x_i \qquad \frac{\partial L}{\partial b} = \frac{1}{n}\sum 2(\hat{y}_i - y_i)$$
+
+<details>
+
+MSE averages the squared residual over all $n$ points.
+
+$$\text{MSE} = \frac{1}{n}\sum_{i=1}^{n}(\hat{y}_i - y_i)^2$$
+
+The prediction $\hat{y}_i$ is just the line evaluated at $x_i$, so we can
+replace it with $wx_i + b$.
+
+$$\text{MSE} = \frac{1}{n}\sum_{i=1}^{n}(wx_i + b - y_i)^2$$
+
+Each term in that sum is the loss for one point. Call it $L_i$.
+
+$$L_i = (wx_i + b - y_i)^2 \qquad \text{so} \qquad \text{MSE} = \frac{1}{n}\sum_{i=1}^{n} L_i$$
+
+The derivative of a sum is the sum of the derivatives, and the constant
+$\frac{1}{n}$ just comes along. So we can work out the derivative for one point
+and then average.
+
+$$\frac{\partial\,\text{MSE}}{\partial w} = \frac{1}{n}\sum_{i=1}^{n}\frac{\partial L_i}{\partial w} \qquad \frac{\partial\,\text{MSE}}{\partial b} = \frac{1}{n}\sum_{i=1}^{n}\frac{\partial L_i}{\partial b}$$
+
+For a single point, the chain rule gives
+
+$$\frac{\partial L_i}{\partial w} = 2(wx_i + b - y_i)\,x_i \qquad \frac{\partial L_i}{\partial b} = 2(wx_i + b - y_i)$$
+
+and averaging over the points gives the gradient.
+
+$$\frac{\partial\,\text{MSE}}{\partial w} = \frac{1}{n}\sum_{i=1}^{n}2(wx_i + b - y_i)\,x_i \qquad \frac{\partial\,\text{MSE}}{\partial b} = \frac{1}{n}\sum_{i=1}^{n}2(wx_i + b - y_i)$$
+
+</details>
 
 Together these two numbers are the gradient. Here they are $-36.85$ and
 $-1.90$. A negative value means increasing that parameter lowers the loss,
