@@ -475,3 +475,43 @@ python src/plot_training.py \
 ```
 
 </details>
+
+# Questions
+
+1. Train from three random starting lines. Do they end in the same place? What
+   would have to be true about the loss for different starting points to end in
+   different places? Would you expect that to hold for a neural network?
+
+```
+   for seed in 1 2 3; do
+       python src/train_line.py \
+           --data out/line_2x_1_1.5_noise.tsv \
+           --random_init \
+           --seed $seed \
+           --epochs 2000 \
+           --out_prefix out/line_seed$seed
+   done
+```
+
+2. Make 20 datasets from $y = 2x + 1$ with noise 5, each with a different seed,
+and train on each. How much do the learned $w$ and $b$ vary? Repeat with
+noise 1.5, and again with 200 points instead of 50. If you could only
+collect one dataset, how would you know how much to trust the $w$ you got?
+
+```
+   for seed in $(seq 1 20); do
+       python src/make_line_dataset.py \
+           --w 2 \
+           --b 1 \
+           --noise 5 \
+           --seed $seed \
+           --out out/rep_$seed.tsv
+
+       python src/train_line.py \
+           --data out/rep_$seed.tsv \
+           --epochs 2000 \
+           --out_prefix out/rep_$seed \
+       | tail -2 \
+       | head -1
+   done
+```
