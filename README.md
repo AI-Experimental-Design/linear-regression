@@ -28,10 +28,10 @@ more noise, the line gets harder to see.
 
 | Generating fucntion | noise | Plot|
 |-|-|-|
-| $y=0.5x+3$ | 0   | <img src="img/line_0.5x_3_no_noise.png"> |
-| $y=2x+1$   | 0   | <img src="img/line_2x_1_no_noise.png">   |
-| $y=2x+1$   | 1.5 | <img src="img/line_2x_1_1.5_noise.png">  | 
-| $y=2x+1$   | 5   |  <img src="img/line_2x_1_5_noise.png">   |
+| $y=0.5x+3$ | 0   | <img src="img/line_0.5x_3_no_noise.png" height="2in"> |
+| $y=2x+1$   | 0   | <img src="img/line_2x_1_no_noise.png" height="2in">   |
+| $y=2x+1$   | 1.5 | <img src="img/line_2x_1_1.5_noise.png" height="2in">  | 
+| $y=2x+1$   | 5   | <img src="img/line_2x_1_5_noise.png" height="2in">   |
 
 <details>
 
