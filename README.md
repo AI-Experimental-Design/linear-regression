@@ -238,4 +238,15 @@ echo "24.5081-24.3077" | bc
 
 </details>
 
+The derivative gives the same answer without the guessing. It is the slope of
+the loss with respect to each parameter, which is what the nudge experiment
+estimates. For MSE:
+
+$$\frac{\partial L}{\partial w} = \frac{1}{n}\sum 2(\hat{y}_i - y_i)\,x_i \qquad \frac{\partial L}{\partial b} = \frac{1}{n}\sum 2(\hat{y}_i - y_i)$$
+
+Together these two numbers are the gradient. Here they are $-36.85$ and
+$-1.90$. A negative value means increasing that parameter lowers the loss,
+which matches the table. The gradient for $w$ has the extra $x_i$ term, which
+is why $w$ is far more sensitive than $b$ when $x$ runs from 0 to 10.
+
 
