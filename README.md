@@ -297,7 +297,7 @@ Average each set of terms over the 50 points.
 
 ```
 python src/line_gradient.py \
-    --data out/line_2x_1_1.5_noise.data.tsv \
+    --data out/line_2x_1_1.5_noise.tsv \
     --w 0.5 \
     --b 8 \
     --points 5
@@ -316,13 +316,96 @@ dL/dw=-36.8518 dL/db=-1.9047
 
 ### Gradient descent
 
-Gradient descent repeats these steps many times:
+Gradient descent repeats these steps many times.
 1. Predict $\hat{y}$ for every $x$ with the current $w$ and $b$.
 2. Compute the loss.
 3. Compute the gradient.
-4. Move each parameter a small step against its gradient, so $w = w - \eta \frac{\partial L}{\partial w}$ and $b = b - \eta \frac{\partial L}{\partial b}$
+4. Move each parameter a small step against its gradient.
+$$w \leftarrow w - \eta \frac{\partial L}{\partial w} \qquad b \leftarrow b - \eta \frac{\partial L}{\partial b}$$
 
 The step size $\eta$ is the learning rate. Each pass through the data is one
 epoch. Here we use a learning rate of 0.02 and train for 500 epochs.
 
+Starting from $w = 0.5$ and $b = 8$, the first epoch moves the parameters to
 
+$$w = 0.5 - (0.02 \times -36.8518) = 1.237 \qquad b = 8 - (0.02 \times -1.9047) = 8.038$$
+
+Both gradients are negative, so both parameters go up. $w$ moves about 20 times
+as far as $b$ because its gradient is about 20 times larger.
+
+
+## Training
+
+
+| Noise | Loss | w,b |
+|-|-|-|
+| 1.5 | <img src="img/line_2x_1_1.5_noise.params.training.png" height="250"> | <img src="img/line_2x_1_1.5_noise.params.png" height="250"> |
+| 5 | <img src="img/line_2x_1_5_noise.params.training.png" height="250"> | <img src="img/line_2x_1_5_noise.params.png" height="250"> |
+
+
+```
+python src/train_line.py \
+    --data out/line_2x_1_1.5_noise.tsv \
+    --w0 0.5 \
+    --b0 8 \
+    --lr 0.02 \
+    --epochs 500 \
+    --out_prefix out/line_2x_1_1.5_noise
+epoch 0000 mse=24.3077 w=+0.500 b=+8.000 dL/dw=-36.852 dL/db=-1.905
+epoch 0001 mse=17.0632 w=+1.237 b=+8.038 dL/dw=+16.985 dL/db=+5.937
+epoch 0002 mse=15.2106 w=+0.897 b=+7.919 dL/dw=-8.894 dL/db=+2.121
+epoch 0005 mse=14.0573 w=+1.053 b=+7.739 dL/dw=+0.458 dL/db=+3.395
+epoch 0010 mse=13.0105 w=+1.086 b=+7.417 dL/dw=-0.479 dL/db=+3.108
+epoch 0020 mse=11.1958 w=+1.174 b=+6.820 dL/dw=-0.415 dL/db=+2.838
+epoch 0050 mse=7.3883 w=+1.393 b=+5.325 dL/dw=-0.315 dL/db=+2.152
+epoch 0100 mse=4.2845 w=+1.646 b=+3.593 dL/dw=-0.198 dL/db=+1.357
+epoch 0200 mse=2.5592 w=+1.906 b=+1.812 dL/dw=-0.079 dL/db=+0.540
+epoch 0300 mse=2.2864 w=+2.010 b=+1.104 dL/dw=-0.031 dL/db=+0.215
+epoch 0500 mse=2.2364 w=+2.068 b=+0.710 dL/dw=-0.005 dL/db=+0.034
+wrote out/line_2x_1_1.5_noise.params.tsv
+
+python src/plot_training.py \
+    -i out/line_2x_1_1.5_noise.params.tsv \
+    -o img/line_2x_1_1.5_noise.params.training.png \
+    --columns loss \
+    --ylog \
+    --title "MSE over training"
+
+python src/plot_training.py \
+    -i out/line_2x_1_1.5_noise.params.tsv \
+    -o img/line_2x_1_1.5_noise.params.png \
+    --columns w,b \
+    --title "w and b over training"
+
+python src/train_line.py \
+    --data out/line_2x_1_5_noise.tsv \
+    --w0 0.5 \
+    --b0 8 \
+    --lr 0.02 \
+    --epochs 500 \
+    --out_prefix out/line_2x_1_5_noise
+epoch 0000 mse=52.3390 w=+0.500 b=+8.000 dL/dw=-41.188 dL/db=-2.137
+epoch 0001 mse=43.2901 w=+1.324 b=+8.043 dL/dw=+18.985 dL/db=+6.628
+epoch 0002 mse=40.9770 w=+0.944 b=+7.910 dL/dw=-9.940 dL/db=+2.362
+epoch 0005 mse=39.5398 w=+1.118 b=+7.709 dL/dw=+0.513 dL/db=+3.787
+epoch 0010 mse=38.2377 w=+1.155 b=+7.350 dL/dw=-0.534 dL/db=+3.467
+epoch 0020 mse=35.9805 w=+1.253 b=+6.684 dL/dw=-0.463 dL/db=+3.165
+epoch 0050 mse=31.2443 w=+1.497 b=+5.017 dL/dw=-0.351 dL/db=+2.400
+epoch 0100 mse=27.3836 w=+1.779 b=+3.085 dL/dw=-0.221 dL/db=+1.514
+epoch 0200 mse=25.2375 w=+2.070 b=+1.099 dL/dw=-0.088 dL/db=+0.602
+epoch 0300 mse=24.8981 w=+2.185 b=+0.309 dL/dw=-0.035 dL/db=+0.239
+epoch 0500 mse=24.8359 w=+2.250 b=-0.130 dL/dw=-0.006 dL/db=+0.038
+
+python src/plot_training.py \
+    -i out/line_2x_1_5_noise.params.tsv \
+    -o img/line_2x_1_5_noise.params.training.png \
+    --columns loss \
+    --ylog \
+    --title "MSE over training"
+
+python src/plot_training.py \
+    -i out/line_2x_1_5_noise.params.tsv \
+    -o img/line_2x_1_5_noise.params.png \
+    --columns w,b \
+    --title "w and b over training"
+```
