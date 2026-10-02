@@ -37,8 +37,8 @@ more noise, the line gets harder to see.
 
 ```
 python src/make_line_dataset.py \
-    -w 0.5 \
-    -b 3 \
+    --w 0.5 \
+    --b 3 \
     --noise 0 \
     --out out/line_0.5x_3_no_noise.tsv
 
@@ -55,8 +55,8 @@ tail -n +2 out/line_0.5x_3_no_noise.tsv \
     --line_style o 
 
 python src/make_line_dataset.py \
-    -w 2 \
-    -b 1 \
+    --w 2 \
+    --b 1 \
     --noise 0 \
     --out out/line_2x_1_no_noise.tsv
 
@@ -73,8 +73,8 @@ tail -n +2 out/line_2x_1_no_noise.tsv \
     --line_style o 
 
 python src/make_line_dataset.py \
-    -w 2 \
-    -b 1 \
+    --w 2 \
+    --b 1 \
     --noise 1.5 \
     --out out/line_2x_1_1.5_noise.tsv
 
@@ -91,8 +91,8 @@ tail -n +2 out/line_2x_1_1.5_noise.tsv \
     --line_style o
 
 python src/make_line_dataset.py \
-    -w 2 \
-    -b 1 \
+    --w 2 \
+    --b 1 \
     --noise 5 \
     --out out/line_2x_1_5_noise.tsv
 
@@ -142,8 +142,8 @@ for data in out/line_0.5x_3_no_noise.tsv out/line_2x_1_1.5_noise.tsv out/line_2x
 
     python src/line_loss.py \
         --data $data \
-        -w 0.5 \
-        -b 8
+        --w 0.5 \
+        --b 8
 
     base=$(basename $data .tsv)
 
@@ -172,7 +172,6 @@ mse=19.9273
 
 ## Updating paramters
 
-
 To improve the line we need to know which direction to move $w$ and $b$. We
 could do this by nudging each parameter up and down by a small amount and see
 what happens to the loss.
@@ -194,14 +193,14 @@ the next step we should increase both should go up, ith $w$ mattering the most.
 data=out/line_2x_1_1.5_noise.tsv
 python src/line_loss.py \
     --data $data \
-    -w 0.5 \
-    -b 8
+    --w 0.5 \
+    --b 8
 mse=24.3077
 
 python src/line_loss.py \
     --data $data \
-    -w 0.6 \
-    -b 8
+    --w 0.6 \
+    --b 8
 mse=20.9850
 
 echo "20.9850-24.3077" | bc
@@ -209,8 +208,8 @@ echo "20.9850-24.3077" | bc
 
 python src/line_loss.py \
     --data $data \
-    -w 0.4 \
-    -b 8
+    --w 0.4 \
+    --b 8
 mse=28.3553
 
 echo "28.3553-24.3077" | bc
@@ -218,8 +217,8 @@ echo "28.3553-24.3077" | bc
 
 python src/line_loss.py \
     --data $data \
-    -w 0.5 \
-    -b 8.1
+    --w 0.5 \
+    --b 8.1
 mse=24.1272
 
 echo "24.1272-24.3077" | bc
@@ -227,8 +226,8 @@ echo "24.1272-24.3077" | bc
 
 python src/line_loss.py \
     --data $data \
-    -w 0.5 \
-    -b 7.9 
+    --w 0.5 \
+    --b 7.9 
 mse=24.5081
 
 echo "24.5081-24.3077" | bc
@@ -238,8 +237,7 @@ echo "24.5081-24.3077" | bc
 
 </details>
 
-We can get to the same result without all of the rials using the derivative of
-the Loss. It is the slope of the loss with respect to each parameter.
+The derivative of the Loss gives us the same result without all of the trials.
 
 $$\frac{\partial L}{\partial w} = \frac{1}{n}\sum 2(\hat{y}_i - y_i)\,x_i \qquad \frac{\partial L}{\partial b} = \frac{1}{n}\sum 2(\hat{y}_i - y_i)$$
 
@@ -297,4 +295,39 @@ Average each set of terms over the 50 points.
 |...| | | | | | |
 |mean| | | | | -36.85 | -1.90 |
 
+```
+python src/line_gradient.py \
+    --data out/line_2x_1_1.5_noise.data.tsv \
+    --w 0.5 \
+    --b 8 \
+    --points 5
+  i       x       y   y_hat   resid   w term   b term
+  1    6.37   14.28   11.18   -3.09   -39.37    -6.18
+  2    2.70    4.58    9.35    4.77    25.71     9.53
+  3    0.41    1.81    8.20    6.39     5.24    12.78
+  4    0.17    2.32    8.08    5.77     1.91    11.53
+  5    8.13   15.33   12.07   -3.27   -53.13    -6.53
+sum                                 -1842.59   -95.23
+n=50
+dL/dw=-36.8518 dL/db=-1.9047
+```
+
 </details>
+
+### Gradient descent
+
+Gradient descent repeats these steps every epcho
+1. Predict $\hat{y}$ for every $x$ with the current $w$ and $b$.
+2. Compute the loss.
+3. Compute the gradient.
+4. Move each parameter a small step against its gradient.
+
+$$w \leftarrow w - \eta \frac{\partial L}{\partial w} \qquad b \leftarrow b - \eta \frac{\partial L}{\partial b}$$
+
+The step size $\eta$ is the learning rate. Each pass through the data is one
+epoch. Here we use a learning rate of 0.02 and train for 500 epochs.
+
+- Parameters: $w$ and $b$, the two numbers training changes.
+- Loss: MSE, the score training tries to lower.
+- Learning rate: 0.02, how far each step moves the parameters.
+- Epoch: one pass through all 50 points, followed by one update.
