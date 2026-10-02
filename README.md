@@ -1,33 +1,25 @@
 # Linear Regression
 
-Most of the models in this course do the same basic job. They learn a function
-from examples where we know the answer, then use that function to predict
-answers we don't have. A few examples follow.
 
-- Predicting the lowest pitch a primate can produce from the length of its
-  vocal folds.
-- Predicting a person's height from their genotype.
-- Predicting whether a missense variant is pathogenic from a conservation
-  score.
-- Predicting gene expression from DNA sequence, which is what Enformer and
-  AlphaGenome do at a much larger scale.
+The goal of machine learning is to use the examples we have to make predictions
+about things we have not observed. For example, we might use a person’s age to
+predict their height, the number of hours a student studies to predict their
+exam score, or measurements from one experiment to predict what we might
+observe in another.
 
-Linear regression is the simplest version of this task. It fits a straight line
-to data.
+Linear regression is one of the simplest examples of this idea. We want to
+learn a function that takes an input $x$ and predicts an output $y$. In the
+simplest case, that function is just a straight line:
 
 $$y = wx + b$$
 
-You may have seen this written as $y = mx + b$. We use $w$ because it is the
-weight of a digital neuron, and it keeps the same name through the rest of the
-course. The model has two parameters to learn, the slope $w$ and the
-$y$-intercept $b$.
+Here, $w$ is the slope and $b$ is the y-intercept. These are the parameters we
+need to learn.
 
-Training starts with a guess for the model parameters. We measure how well the
-guess fits the data, adjust the parameters to improve it, and repeat. We stop
-when the improvements level out and each new round barely changes the loss.
-Ideally that is also the point where the model fits well. It doesn't have to
-be. A model can stop improving because it has found the best answer it can
-reach, even if that answer is still poor.
+The basic process is straightforward. We start with some values for $w$ and
+$b$, see how well the resulting line fits our data, and then adjust the
+parameters to improve the fit. We repeat this process until we have a line that
+provides a useful approximation of the relationship in our data.
 
 ## Data
 
