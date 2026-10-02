@@ -245,7 +245,7 @@ $$\frac{\partial L}{\partial w} = \frac{1}{n}\sum 2(\hat{y}_i - y_i)\,x_i \qquad
 
 <details>
 
-MSE averages the squared residual over all $n$ points.
+Our Loss fucntion is MSE, which  averages the squared residual over all $n$ points.
 
 $$\text{MSE} = \frac{1}{n}\sum_{i=1}^{n}(\hat{y}_i - y_i)^2$$
 
@@ -274,9 +274,27 @@ $$\frac{\partial\,\text{MSE}}{\partial w} = \frac{1}{n}\sum_{i=1}^{n}2(wx_i + b 
 
 </details>
 
-Together these two numbers are the gradient. Here they are $-36.85$ and
-$-1.90$. A negative value means increasing that parameter lowers the loss,
-which matches the table. The gradient for $w$ has the extra $x_i$ term, which
-is why $w$ is far more sensitive than $b$ when $x$ runs from 0 to 10.
+Together these two numbers are the gradient. By plugging all of the data points
+we get $-36.85$ and $-1.90$. A negative value means increasing that parameter
+lowers the loss, which matches the table. 
 
+<details>
 
+- The prediction, $\hat{y}_i = 0.5x_i + 8$.
+- The residual, $\hat{y}_i - y_i$.
+- That point's term for $w$, $2(\hat{y}_i - y_i)\,x_i$.
+- That point's term for $b$, $2(\hat{y}_i - y_i)$.
+
+Average each set of terms over the 50 points.
+
+| $i$ | $x_i$ | $y_i$ | $\hat{y}_i$ | residual | $2(\hat{y}_i - y_i)x_i$ | $2(\hat{y}_i - y_i)$
+|-|-|-|-|-|-|-|
+| 1 | 6.37 | 14.28 | 11.18 | -3.09 | -39.37 | -6.18 |
+| 2 | 2.70 | 4.58  | 9.35  | 4.77  | 25.71  | 9.53  |
+| 3 | 0.41 | 1.81  | 8.20  | 6.39  | 5.24   | 12.78 |
+| 4 | 0.17 | 2.32  | 8.08  | 5.77  | 1.91   | 11.53 |
+| 5 | 8.13 | 15.33 | 12.07 | -3.27 | -53.13 | -6.53 |
+|...| | | | | | |
+|mean| | | | | -36.85 | -1.90 |
+
+</details>
