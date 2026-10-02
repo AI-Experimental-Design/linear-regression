@@ -343,6 +343,20 @@ as far as $b$ because its gradient is about 20 times larger.
 | 5 | <img src="img/line_2x_1_5_noise.params.training.png" height="250"> | <img src="img/line_2x_1_5_noise.params.png" height="250"> |
 
 
+| Epoch | Fit |
+|-|-|
+| 0 | <img src="img/line_2x_1_1.5_noise.epoch_0.residuals.png" height="250"> |
+| 1 | <img src="img/line_2x_1_1.5_noise.epoch_1.residuals.png" height="250"> |
+| 2 | <img src="img/line_2x_1_1.5_noise.epoch_2.residuals.png" height="250"> |
+| 5 | <img src="img/line_2x_1_1.5_noise.epoch_5.residuals.png" height="250"> |
+| 10 | <img src="img/line_2x_1_1.5_noise.epoch_10.residuals.png" height="250"> |
+| 20 | <img src="img/line_2x_1_1.5_noise.epoch_20.residuals.png" height="250"> |
+| 50 | <img src="img/line_2x_1_1.5_noise.epoch_50.residuals.png" height="250"> |
+| 100 | <img src="img/line_2x_1_1.5_noise.epoch_100.residuals.png" height="250"> |
+| 200 | <img src="img/line_2x_1_1.5_noise.epoch_200.residuals.png" height="250"> |
+| 300 | <img src="img/line_2x_1_1.5_noise.epoch_300.residuals.png" height="250"> |
+| 500 | <img src="img/line_2x_1_1.5_noise.epoch_500.residuals.png" height="250"> |
+
 ```
 python src/train_line.py \
     --data out/line_2x_1_1.5_noise.tsv \
@@ -376,6 +390,24 @@ python src/plot_training.py \
     -o img/line_2x_1_1.5_noise.params.png \
     --columns w,b \
     --title "w and b over training"
+
+for epoch in $(cat out/line_2x_1_1.5_noise.params.tsv | csvcut -K 1 -t -c epoch,w,b | tail -n+2); do
+    e=$(echo $epoch | cut -d "," -f 1)
+    w=$(echo $epoch | cut -d "," -f 2)
+    b=$(echo $epoch | cut -d "," -f 3)
+
+    echo $e $w $b
+
+    python src/plot_fit.py \
+        --data out/line_2x_1_1.5_noise.tsv \
+        --w $w \
+        --b $b \
+        --residuals \
+        -o img/line_2x_1_1.5_noise.epoch_${e}.residuals.png \
+        -x x \
+        -y y
+done
+
 
 python src/train_line.py \
     --data out/line_2x_1_5_noise.tsv \
