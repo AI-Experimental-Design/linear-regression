@@ -337,25 +337,45 @@ as far as $b$ because its gradient is about 20 times larger.
 ## Training
 
 
+We now run gradient descent on two of the datasets from above. Both came from
+the same line, $y = 2x + 1$, one with a little noise (1.5) and one with a lot
+(5). Both runs start from the same poor guess ($w = 0.5$, $b = 8$), use the
+same learning rate (0.02), and train for 500 epochs. At each epoch the script
+records the loss, $w$ and $b$, so we can watch the line improve. Since we know
+the true line, we can also see how close training gets to it, and how noise
+changes the answer.
+
+On the data with noise 1.5, the loss falls from 24.31 to 2.24. In the first two
+epochs $w$ overshoots and swings back, because its gradient is large. After
+that $w$ settles near 2 within a few dozen epochs, while $b$ creeps down from 8
+over hundreds of epochs. By epoch 500 the line is $w = 2.07$, $b = 0.71$. The
+loss has leveled out, but $b$ is still drifting slowly.
+
+On the data with noise 5, training follows a very similar path. The overshoot,
+the quick settling of $w$ and the slow crawl of $b$ all show up again. The main
+difference is where training ends. The loss falls from 52.34 to 24.84, and by
+epoch 500 the line is $w = 2.25$, $b = -0.13$.
+
+Neither model lands on the true line ($w = 2$, $b = 1$), and the noisier data
+ends up further from it. 
+
 | Noise | Loss | w,b |
 |-|-|-|
 | 1.5 | <img src="img/line_2x_1_1.5_noise.params.training.png" height="250"> | <img src="img/line_2x_1_1.5_noise.params.png" height="250"> |
 | 5 | <img src="img/line_2x_1_5_noise.params.training.png" height="250"> | <img src="img/line_2x_1_5_noise.params.png" height="250"> |
 
+The line during training, for the data with noise 1.5.
 
 | Epoch | Fit |
 |-|-|
-| 0 | <img src="img/line_2x_1_1.5_noise.epoch_0.residuals.png" height="250"> |
-| 1 | <img src="img/line_2x_1_1.5_noise.epoch_1.residuals.png" height="250"> |
-| 2 | <img src="img/line_2x_1_1.5_noise.epoch_2.residuals.png" height="250"> |
-| 5 | <img src="img/line_2x_1_1.5_noise.epoch_5.residuals.png" height="250"> |
-| 10 | <img src="img/line_2x_1_1.5_noise.epoch_10.residuals.png" height="250"> |
-| 20 | <img src="img/line_2x_1_1.5_noise.epoch_20.residuals.png" height="250"> |
-| 50 | <img src="img/line_2x_1_1.5_noise.epoch_50.residuals.png" height="250"> |
-| 100 | <img src="img/line_2x_1_1.5_noise.epoch_100.residuals.png" height="250"> |
-| 200 | <img src="img/line_2x_1_1.5_noise.epoch_200.residuals.png" height="250"> |
-| 300 | <img src="img/line_2x_1_1.5_noise.epoch_300.residuals.png" height="250"> |
-| 500 | <img src="img/line_2x_1_1.5_noise.epoch_500.residuals.png" height="250"> |
+| 0 | <img src="img/line_2x_1_1.5_noise.epoch_0.residuals.png" height="150"> |
+| 1 | <img src="img/line_2x_1_1.5_noise.epoch_1.residuals.png" height="150"> |
+| 2 | <img src="img/line_2x_1_1.5_noise.epoch_2.residuals.png" height="150"> |
+| 10 | <img src="img/line_2x_1_1.5_noise.epoch_10.residuals.png" height="150"> |
+| 100 | <img src="img/line_2x_1_1.5_noise.epoch_100.residuals.png" height="150"> |
+| 500 | <img src="img/line_2x_1_1.5_noise.epoch_500.residuals.png" height="150"> |
+
+<details>
 
 ```
 python src/train_line.py \
@@ -441,3 +461,5 @@ python src/plot_training.py \
     --columns w,b \
     --title "w and b over training"
 ```
+
+</details>
