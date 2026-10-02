@@ -28,10 +28,10 @@ more noise, the line gets harder to see.
 
 | Generating function | Noise (sd) | Plot |
 |-|-|-|
-| $y=0.5x+3$ | 0   | <img src="img/line_0.5x_3_no_noise.png" height="150"> |
-| $y=2x+1$   | 0   | <img src="img/line_2x_1_no_noise.png" height="150">   |
-| $y=2x+1$   | 1.5 | <img src="img/line_2x_1_1.5_noise.png" height="150">  |
-| $y=2x+1$   | 5   | <img src="img/line_2x_1_5_noise.png" height="150">    |
+| $y=0.5x+3$ | 0   | <img src="img/line_0.5x_3_no_noise.png" height="250"> |
+| $y=2x+1$   | 0   | <img src="img/line_2x_1_no_noise.png" height="250">   |
+| $y=2x+1$   | 1.5 | <img src="img/line_2x_1_1.5_noise.png" height="250">  |
+| $y=2x+1$   | 5   | <img src="img/line_2x_1_5_noise.png" height=2150">    |
 
 <details>
 
@@ -129,10 +129,10 @@ Suppose we pick the line $y=05.x+8$, then the loss for the different data sets w
 
 | MSE | Plot|
 |-|-|
-| 25.0    | <img src="img/line_0.5x_3_no_noise.residuals.png"> |
-| 19.9273 | <img src="img/line_2x_1_no_noise.residuals.png"> | 
-| 24.3077 | <img src="img/line_2x_1_1.5_noise.residuals.png"> |
-| 52.3390 | <img src="img/line_2x_1_5_noise.residuals.png"> |
+| 25.0    | <img src="img/line_0.5x_3_no_noise.residuals.png" height="250"> |
+| 19.9273 | <img src="img/line_2x_1_no_noise.residuals.png" height="250"> | 
+| 24.3077 | <img src="img/line_2x_1_1.5_noise.residuals.png" height="250"> |
+| 52.3390 | <img src="img/line_2x_1_5_noise.residuals.png" height="250"> |
 
 <details>
 
