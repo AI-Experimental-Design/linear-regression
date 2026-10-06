@@ -57,14 +57,18 @@ python src/plot_fit.py \
 
 ## Linear regression as a classifier
 
-We can fit a line to these data, which gives use $y$ which can be mapped to a
-class with a rule about hwere the decision boundary should be. Here we will use
-say if $y<0.5$ then the class is 0 else the class is 1.
+We can fit a line to these data just like we did for linear regression. The
+difference is that now the observed values are either 0 or 1.
 
-On this dataset, this works surprisingly well. The boundary falls at about
-$x=4.5$, and we correctly classify about 95% of the observations.
+To turn the fitted line into a classifier, we need a rule that maps its output
+to a class. Here we use 0.5 as the decision boundary: if $\hat{y} < 0.5$, we
+predict class 0; otherwise, we predict class 1.
 
-|Loss | $w$,$b | Fit |
+The plots below show the loss decreasing during training, the values of $w$ and
+$b$ changing, and the final fitted line. At the end of training, the model has
+learned $w=0.135$ and $b=-0.087$.
+
+|Loss | $w$,$b$ | Fit |
 |-|-|-|
 | <img src="img/class.data.params.training.png"> | <img src="img/class.data.params.png"> | <img src="img/class.data.tsv.residuals.png"> |
 
