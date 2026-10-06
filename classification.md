@@ -203,9 +203,9 @@ We can see the effect of this by adding ten more class-1 observations far to the
 right, with $x$ between 10 and 20. They are nowhere near the decision boundary
 and are easy to classify, but they have a large effect on the fitted line.
 
-|Loss | $w,b$ | Fit |
+| Data | Fit |
 |-|-|-|
-| <img src="img/class.10_outliers.data.params.training.png"> | <img src="img/class.10_outliers.data.params.png"> | <img src="img/class.10_outliers.data.tsv.residuals.png"> |
+| <img src="img/class.10_outliers.data.png"> |  <img src="img/class.10_outliers.data.tsv.residuals.png"> |
 
 <details>
 
@@ -215,6 +215,20 @@ for v in $(seq 10 20); do
     echo -e "${v}.0\t1.0" \
     >> out/class.10_outliers.data.tsv
 done
+
+python src/plot_fit.py \
+    --data out/class.10_outliers.data.tsv \
+    --w 0 \
+    --b -100 \
+    --color_by_label \
+    -o img/class.10_outliers.data.png \
+    -x x \
+    -y label \
+    --width 3 \
+    --height 2.2 \
+    --y_min -0.15 \
+    --y_max 1.15 \
+    --title "Two classes;10;center"
 
 python src/train_line.py \
     --data out/class.10_outliers.data.tsv \
