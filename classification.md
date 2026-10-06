@@ -66,7 +66,7 @@ $x=4.5$, and we correctly classify about 95% of the observations.
 
 |Loss | $w$,$b | Fit |
 |-|-|-|
-| <img src="img/class.data.params.training.png"> | <img src="img/class.data.params.png"> | <img src="img/class.data.tsv.residuals.png" |
+| <img src="img/class.data.params.training.png"> | <img src="img/class.data.params.png"> | <img src="img/class.data.tsv.residuals.png"> |
 
 <details>
 
