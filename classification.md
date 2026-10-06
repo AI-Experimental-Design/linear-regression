@@ -278,6 +278,35 @@ python src/plot_fit.py \
     -o img/class.10_outliers.data.tsv.residuals.png \
     -x x \
     -y y
+
+correct=0
+total=0
+
+while read x class; do
+
+    y_hat=$(python src/linear_inference.py \
+        --w 0.045 \
+        --b 0.441 \ 
+        --x "$x" \
+        | tail -n +2 \
+        | awk '{print $2}')
+
+    pred=$(awk -v y="$y_hat" 'BEGIN {print (y >= 0.5) ? 1 : 0}')
+
+    if awk -v p="$pred" -v c="$class" 'BEGIN {exit !(p == c)}'; then
+        correct=$((correct + 1))
+    fi
+
+    total=$((total + 1))
+
+done < <(tail -n +3 out/class.10_outliers.data.tsv)
+
+accuracy=$(awk -v c="$correct" -v t="$total" 'BEGIN {print c/t}')
+
+echo "correct: $correct / $total"
+correct: 54 / 70
+echo "accuracy: $accuracy"
+accuracy: 0.771429
 ```
 
 </details>
