@@ -326,8 +326,9 @@ and one. Logistic regression passes $wx+b$ through the sigmoid function, which
 maps any value to a value between 0 and 1. Large negative values approach 0,
 large positive values approach 1, and $wx+b=0$ maps to 0.5.
 
+| Sigmoid funciton | Sigmoid plot |
 |-|-|
-| $\hat{p} = \frac{1}{1 + e^{-(wx+b)}}$ | <img src="img/sigmoid.png"> |
+| $\hat{p} = \frac{1}{1 + e^{-(wx+b)}}$ | <img src="img/sigmoid.png" height="200"> |
 
 We interpret $\hat{p}$ as the probability that an observation is in class 1.
 With the decision boundary set to 0.5, probabilities below 0.5 are classified
