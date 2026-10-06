@@ -68,8 +68,8 @@ The plots below show the loss decreasing during training, the values of $w$ and
 $b$ changing, and the final fitted line. At the end of training, the model has
 learned $w=0.135$ and $b=-0.087$.
 
-|Loss | $w$,$b$ | Fit |
-|-|-|-|
+|Loss | $w$, $b$ | Fit |
+|-|-|-l|
 | <img src="img/class.data.params.training.png"> | <img src="img/class.data.params.png"> | <img src="img/class.data.tsv.residuals.png"> |
 
 <details>
@@ -116,8 +116,27 @@ python src/plot_fit.py \
     -o img/class.data.tsv.residuals.png \
     -x x \
     -y y
+
+
 ```
 
 </details>
 
+
+To turn the fitted line into a classifier, we need a rule that maps its output
+to a class. Here we use 0.5 as the decision boundary: if $\hat{y} < 0.5$, we
+predict class 0; otherwise, we predict class 1.
+
+We can evaluate the classifier using accuracy, the fraction of observations
+assigned to the correct class.
+
+$$
+\text{accuracy} =
+\frac{\text{number correctly classified}}
+{\text{total number of observations}}
+$$
+
+After training, we can use the fitted line to classify every observation and
+calculate its accuracy. This tells us how well the line works as a classifier,
+rather than just how closely it fits the 0 and 1 values.
 
