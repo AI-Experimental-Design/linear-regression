@@ -204,7 +204,7 @@ right, with $x$ between 10 and 20. They are nowhere near the decision boundary
 and are easy to classify, but they have a large effect on the fitted line.
 
 | Data | Fit |
-|-|-|-|
+|-|-|
 | <img src="img/class.10_outliers.data.png"> |  <img src="img/class.10_outliers.data.tsv.residuals.png"> |
 
 <details>
