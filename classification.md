@@ -69,7 +69,7 @@ $b$ changing, and the final fitted line. At the end of training, the model has
 learned $w=0.135$ and $b=-0.087$.
 
 |Loss | $w,b$ | Fit |
-|-|-|-l|
+|-|-|-|
 | <img src="img/class.data.params.training.png"> | <img src="img/class.data.params.png"> | <img src="img/class.data.tsv.residuals.png"> |
 
 <details>
