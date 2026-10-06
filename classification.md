@@ -207,6 +207,13 @@ and are easy to classify, but they have a large effect on the fitted line.
 |-|-|
 | <img src="img/class.10_outliers.data.png"> |  <img src="img/class.10_outliers.data.tsv.residuals.png"> |
 
+The resulting line has $w=0.045$ and $b=0.441$, moving the decision boundary
+from about $x=4.35$ to about $x=1.31$.
+
+The new observations are easy to classify, but MSE causes them to pull the line
+toward $y=1$. The result is a much worse decision boundary for the original
+observations.
+
 <details>
 
 ```
@@ -274,3 +281,6 @@ python src/plot_fit.py \
 ```
 
 </details>
+
+## Logistic regression
+
