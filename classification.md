@@ -123,11 +123,18 @@ python src/plot_fit.py \
 </details>
 
 
-To turn the fitted line into a classifier, we need a rule that maps its output
-to a class. Here we use 0.5 as the decision boundary: if $\hat{y} < 0.5$, we
-predict class 0; otherwise, we predict class 1.
+To turn the fitted line into a classifier, we first use inference to calculate
+$\hat{y}$ for each observation:
 
-We can evaluate the classifier using accuracy, the fraction of observations
+$$
+\hat{y} = wx + b
+$$
+
+We then need a rule that maps $\hat{y}$ to a class. Here we use 0.5 as the
+decision boundary. If $\hat{y} < 0.5$, we predict class 0. Otherwise, we
+predict class 1.
+
+We can evaluate these predictions using accuracy, the fraction of observations
 assigned to the correct class.
 
 $$
@@ -136,7 +143,42 @@ $$
 {\text{total number of observations}}
 $$
 
-After training, we can use the fitted line to classify every observation and
-calculate its accuracy. This tells us how well the line works as a classifier,
-rather than just how closely it fits the 0 and 1 values.
+Using our trained model, 57 of the 60 observations are classified correctly,
+giving an accuracy of 95%. So fitting a line and using 0.5 as a decision
+boundary works well for these points.
 
+<details>
+
+```
+correct=0
+total=0
+
+while read x class; do
+
+    y_hat=$(python src/linear_inference.py \
+        --w 0.135 \
+        --b -0.087 \
+        --x "$x" \
+        | tail -n +2 \
+        | awk '{print $2}')
+
+    pred=$(awk -v y="$y_hat" 'BEGIN {print (y >= 0.5) ? 1 : 0}')
+
+    if awk -v p="$pred" -v c="$class" 'BEGIN {exit !(p == c)}'; then
+        correct=$((correct + 1))
+    fi
+
+    total=$((total + 1))
+
+done < <(tail -n +2 out/class.data.tsv)
+
+accuracy=$(awk -v c="$correct" -v t="$total" 'BEGIN {print c/t}')
+
+echo "correct: $correct / $total"
+correct: 57 / 60
+echo "accuracy: $accuracy"
+accuracy: 0.95
+
+```
+
+</details>
