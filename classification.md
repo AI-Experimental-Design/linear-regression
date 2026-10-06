@@ -313,3 +313,41 @@ accuracy: 0.771429
 
 ## Logistic regression
 
+While linear regression does not work well for classification, we can still
+build a capable classifier from the core linear framework by changing how we
+interpret the model's output and the loss we use to train. Instead of treating
+$wx + b$ directly as a prediction for $y$, logistic regression transforms the
+output into the probability that an observation belongs to class 1. We also
+replace MSE with a loss function designed for classification, where correct,
+confident predictions have low loss and confident mistakes have high loss.
+
+The output of $wx+b$ can be any number, but a probability must be between zero
+and one. Logistic regression passes $wx+b$ through the sigmoid function, which
+maps any value to a value between 0 and 1. Large negative values approach 0,
+large positive values approach 1, and $wx+b=0$ maps to 0.5.
+
+|-|-|
+| $\hat{p} = \frac{1}{1 + e^{-(wx+b)}}$ | <img src="img/sigmoid.png"> |
+
+We interpret $\hat{p}$ as the probability that an observation is in class 1.
+With the decision boundary set to 0.5, probabilities below 0.5 are classified
+as 0 and probabilities at or above 0.5 are classified as 1.
+
+<details>
+
+```bash
+python3 -c "
+    import numpy as np
+    x = np.linspace(-6, 6, 200)
+    y = 1/(1+np.exp(-x))
+    for xi, yi in zip(x, y): print(xi, yi)
+" \
+| python3 src/plot_line.py \
+    -o img/sigmoid.png \
+    --width 1 \
+    --height 1 \
+    --line_style "-"
+```
+
+</details>
+
