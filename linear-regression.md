@@ -477,6 +477,55 @@ python src/plot_training.py \
 
 </details>
 
+## Inference
+
+Training gives us values for $w$ and $b$. With those values, we no longer need
+the training data to make a prediction. We can give the model a new $x$ and use
+the learned line, $\hat{y} = wx + b$, to predict its $y$.
+
+For example, the model trained on the data with noise 1.5 learned $w=2.068$ and
+$b=0.710$. For any new observation with value $x$, the prediction is
+
+$$
+\hat{y} = (2.068)x + 0.710
+$$
+
+Making predictions with a trained model is called inference. Training uses
+observed $x$ and $y$ values to learn the parameters. Inference keeps those
+parameters fixed and uses them to predict $y$ for new values of $x$.
+
+| $x$ | $\hat{y}$ |
+|-|-|
+|   0.00 |     0.710 |
+|   2.00 |     4.846 |
+|   4.00 |     8.982 |
+|   6.00 |    13.118 |
+|   8.00 |    17.254 |
+|  10.00 |    21.390 |
+
+<details>
+
+```
+python src/linear_inference.py \
+    --w 2.068 \
+    --b 0.710 \
+    --x 0 2 4 6 8 10
+       x      y_hat
+    0.00      0.710
+    2.00      4.846
+    4.00      8.982
+    6.00     13.118
+    8.00     17.254
+   10.00     21.390
+```
+
+</details>
+
+
+Making predictions with a trained model is called inference. Training uses
+observed $x$ and $y$ values to learn the parameters. Inference keeps those
+parameters fixed and uses them to predict $y$ for new values of $x$.
+
 # Questions
 
 1. Train from three random starting lines. Do they end in the same place? What
