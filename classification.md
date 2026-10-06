@@ -25,9 +25,9 @@ classify things?
 ## Data
 
 We start with a small synthetic dataset containing 60 observations and one
-feature, $x$.  Observations with smaller values of $x$ are mostly class 0,
-while observations with larger values are mostly class 1. There is some overlap
-near the boundary.
+feature, $x$.  Observations with smaller values of $x$ are mostly class 0.
+Observations with larger values are mostly class 1. There is some overlap
+between the classes.
 
 <img src="img/class.data.png" style="height: 2in;">
 
@@ -50,6 +50,68 @@ python src/plot_fit.py \
     --y_min -0.15 \
     --y_max 1.15 \
     --title "Two classes;10;center"
+```
+
+</details>
+
+
+## Linear regression as a classifier
+
+We can fit a line to these data, which gives use $y$ which can be mapped to a
+class with a rule about hwere the decision boundary should be. Here we will use
+say if $y<0.5$ then the class is 0 else the class is 1.
+
+On this dataset, this works surprisingly well. The boundary falls at about
+$x=4.5$, and we correctly classify about 95% of the observations.
+
+|Loss | $w$,$b | Fit |
+|-|-|-|
+| <img src="img/class.data.params.training.png"> | <img src="img/class.data.params.png"> | <img src="img/class.data.tsv.residuals.png" |
+
+<details>
+
+```
+python src/train_line.py \
+    --data out/class.data.tsv \
+    --w0 0.5 \
+    --b0 8 \
+    --lr 0.02 \
+    --epochs 500 \
+    --out_prefix out/class.data
+epoch 0000 mse=100.0553 w=+0.500 b=+8.000 dL/dw=+106.779 dL/db=+19.887
+epoch 0001 mse=29.4520 w=-1.636 b=+7.602 dL/dw=-43.897 dL/db=-2.492
+epoch 0002 mse=17.6992 w=-0.758 b=+7.652 dL/dw=+16.898 dL/db=+6.481
+epoch 0005 mse=14.5802 w=-0.989 b=+7.382 dL/dw=-1.707 dL/db=+3.604
+epoch 0010 mse=13.1789 w=-0.917 b=+7.014 dL/dw=-0.520 dL/db=+3.590
+epoch 0020 mse=10.7832 w=-0.816 b=+6.328 dL/dw=-0.481 dL/db=+3.244
+epoch 0050 mse=5.9165 w=-0.566 b=+4.640 dL/dw=-0.355 dL/db=+2.397
+epoch 0100 mse=2.1985 w=-0.285 b=+2.748 dL/dw=-0.215 dL/db=+1.448
+epoch 0200 mse=0.3477 w=-0.013 b=+0.914 dL/dw=-0.078 dL/db=+0.528
+epoch 0300 mse=0.1015 w=+0.086 b=+0.246 dL/dw=-0.029 dL/db=+0.193
+epoch 0500 mse=0.0644 w=+0.135 b=-0.087 dL/dw=-0.004 dL/db=+0.026
+wrote out/class.data.params.tsv
+
+python src/plot_training.py \
+    -i out/class.data.params.tsv \
+    -o img/class.data.params.training.png \
+    --columns loss \
+    --ylog \
+    --title "MSE over training"
+
+python src/plot_training.py \
+    -i out/class.data.params.tsv \
+    -o img/class.data.params.png \
+    --columns w,b \
+    --title "w and b over training"
+    
+python src/plot_fit.py \
+    --data  out/class.data.tsv \
+    --w 0.135 \
+    --b -0.087 \
+    --residuals \
+    -o img/class.data.tsv.residuals.png \
+    -x x \
+    -y y
 ```
 
 </details>
