@@ -200,5 +200,63 @@ class-1 side of the 0.5 boundary. But MSE thinks predicting 10 is terrible
 because it is far from the numerical target of 1.
 
 We can see the effect of this by adding ten more class-1 observations far to the
-right, with $x$ between 40 and 50. They are nowhere near the decision boundary
+right, with $x$ between 10 and 20. They are nowhere near the decision boundary
 and are easy to classify, but they have a large effect on the fitted line.
+
+|Loss | $w,b$ | Fit |
+|-|-|-|
+| <img src="img/class.10_outliers.data.params.training.png"> | <img src="img/class.10_outliers.data.params.png"> | <img src="img/class.10_outliers.data.tsv.residuals.png"> |
+
+<details>
+
+```
+cp out/class.data.tsv out/class.10_outliers.data.tsv
+for v in $(seq 10 20); do 
+    echo -e "${v}.0\t1.0" \
+    >> out/class.10_outliers.data.tsv
+done
+
+python src/train_line.py \
+    --data out/class.10_outliers.data.tsv \
+    --w0 0.5 \
+    --b0 8 \
+    --lr 0.01 \
+    --epochs 500 \
+    --out_prefix out/class.10_outliers.data
+epoch 0000 mse=117.5150 w=+0.500 b=+8.000 dL/dw=+159.179 dL/db=+21.298
+epoch 0001 mse=29.8897 w=-1.092 b=+7.787 dL/dw=-51.917 dL/db=-0.121
+epoch 0002 mse=20.5788 w=-0.573 b=+7.788 dL/dw=+16.032 dL/db=+6.729
+epoch 0005 mse=18.7730 w=-0.687 b=+7.625 dL/dw=-1.053 dL/db=+4.897
+epoch 0010 mse=17.5692 w=-0.658 b=+7.381 dL/dw=-0.483 dL/db=+4.791
+epoch 0020 mse=15.3915 w=-0.611 b=+6.916 dL/dw=-0.454 dL/db=+4.482
+epoch 0050 mse=10.3568 w=-0.487 b=+5.693 dL/dw=-0.372 dL/db=+3.670
+epoch 0100 mse=5.3739 w=-0.328 b=+4.127 dL/dw=-0.266 dL/db=+2.630
+epoch 0200 mse=1.4995 w=-0.133 b=+2.201 dL/dw=-0.137 dL/db=+1.351
+epoch 0300 mse=0.4772 w=-0.033 b=+1.211 dL/dw=-0.070 dL/db=+0.694
+epoch 0500 mse=0.1363 w=+0.045 b=+0.441 dL/dw=-0.019 dL/db=+0.183
+wrote out/class.10_outliers.data.params.tsv
+
+python src/plot_training.py \
+    -i out/class.10_outliers.data.params.tsv \
+    -o img/class.10_outliers.data.params.training.png \
+    --columns loss \
+    --ylog \
+    --title "MSE over training"
+
+python src/plot_training.py \
+    -i out/class.10_outliers.data.params.tsv \
+    -o img/class.10_outliers.data.params.png \
+    --columns w,b \
+    --title "w and b over training"
+
+python src/plot_fit.py \
+    --data  out/class.data.tsv \
+    --w 0.045 \
+    --b 0.441 \ 
+    --residuals \
+    -o img/class.10_outliers.data.tsv.residuals.png \
+    -x x \
+    -y y
+```
+
+</details>
