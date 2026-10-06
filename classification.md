@@ -182,3 +182,23 @@ accuracy: 0.95
 ```
 
 </details>
+
+## Issues with linear regression as a classifier
+
+Even though we are using the line as a classifier, we are still training it
+with MSE. MSE does not have the concept of a decision boundary and does not
+track whether a point is on the correct side of it. Instead, it tries to make
+every prediction $\hat{y}$ as close as possible to its observed value of 0 or 1.
+
+For example, suppose a class-1 point has $y=1$:
+- $\hat{y}=1$ has squared error 0
+- $\hat{y}=2$ has squared error 1
+- $\hat{y}=10$ has squared error 81
+
+From a classification perspective, all three predictions are comfortably on the
+class-1 side of the 0.5 boundary. But MSE thinks predicting 10 is terrible
+because it is far from the numerical target of 1.
+
+We can see the effect of this by adding ten more class-1 observations far to the
+right, with $x$ between 40 and 50. They are nowhere near the decision boundary
+and are easy to classify, but they have a large effect on the fitted line.
