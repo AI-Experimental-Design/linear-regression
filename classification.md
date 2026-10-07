@@ -431,17 +431,9 @@ regression.
 
 For logistic regression with binary cross-entropy, the gradients are
 
-$$
-\frac{\partial L}{\partial w}
-=
-\frac{1}{n}\sum_{i=1}^{n}(\hat{p}_i-y_i)x_i
-$$
+$$ \frac{\partial L}{\partial w} = \frac{1}{n}\sum_{i=1}^{n}(\hat{p}_i-y_i)x_i $$
 
-$$
-\frac{\partial L}{\partial b}
-=
-\frac{1}{n}\sum_{i=1}^{n}(\hat{p}_i-y_i)
-$$
+$$ \frac{\partial L}{\partial b} = \frac{1}{n}\sum_{i=1}^{n}(\hat{p}_i-y_i) $$
 
 These should look familiar. As with linear regression, the gradient tells us
 which direction to move each parameter and the learning rate determines how
