@@ -321,6 +321,9 @@ output into the probability that an observation belongs to class 1. We also
 replace MSE with a loss function designed for classification, where correct,
 confident predictions have low loss and confident mistakes have high loss.
 
+
+### Sigmoid
+
 The output of $wx+b$ can be any number, but a probability must be between zero
 and one. Logistic regression passes $wx+b$ through the sigmoid function, which
 maps any value to a value between 0 and 1. Large negative values approach 0,
@@ -329,10 +332,6 @@ large positive values approach 1, and $wx+b=0$ maps to 0.5.
 | Sigmoid funciton | Sigmoid plot |
 |-|-|
 | $\hat{p} = \frac{1}{1 + e^{-(wx+b)}}$ | <img src="img/sigmoid.png" height="200"> |
-
-We interpret $\hat{p}$ as the probability that an observation is in class 1.
-With the decision boundary set to 0.5, probabilities below 0.5 are classified
-as 0 and probabilities at or above 0.5 are classified as 1.
 
 <details>
 
@@ -345,10 +344,163 @@ python3 -c "
 " \
 | python3 src/plot_line.py \
     -o img/sigmoid.png \
-    --width 1 \
-    --height 1 \
-    --line_style "-"
+    --width 2 \
+    --height 2 \
+    --line_style "-" \
+    -x "$y$" -y "$\hat{p}$"
 ```
 
 </details>
 
+We interpret $\hat{p}$ as the probability that an observation is in class 1.
+With the decision boundary set to 0.5, probabilities below 0.5 are classified
+as 0 and probabilities at or above 0.5 are classified as 1.  For example:
+
+| $x$ | $\hat{p}$ | prediction |
+|-|-|-|
+| 2   | 0.01 | 0 |
+| 3.5 | 0.18 | 0 |
+| 4   | 0.38 | 0 |
+| 4.5 | 0.63 | 1 |
+| 6   | 0.97 | 1 |
+| 8   | 1.00 | 1 |
+
+
+### Binary cross-entropy
+
+Mean squared error tries to make every prediction as close as possible to its
+observed value of 0 or 1, but when combined with the sigmoid function it can
+produce very small gradients for confident predictions, wich in turn can 
+make gradient descent slow to correct a model that is badly wrong.
+
+Consider a single observation whose true class is 1. The model calculates
+$y = wx+b$ and then passes $y$ through the sigmoid to get a probability
+$\hat{p}$.  If $y$ is a large negative number, the sigmoid produces a
+probability very close to 0. The model is confidently predicting class 0, which
+is very wrong because the true class is 1.
+
+The problem is when we ask gradient descent how to fix it. Near 0 and 1 the
+sigmoid is flat, so changing $y$ produces only a small change in $\hat{p}$.
+So depite MSE yielding a large loss, the gradient is small.
+
+We can see this by looking at increasingly wrong predictions for our class-1
+observation:
+
+| $y$ | $\hat{p}$ | MSE MSE gradient | BCE | BCE gradient |
+|-|-|-|-|-|-|
+|0   | 0.500   | 0.250 | -0.250   | 0.693  | -0.500   |
+|-2  | 0.119   | 0.776 | -0.185   | 2.127  | -0.881   |
+|-5  | 0.007   | 0.987 | -0.013   | 5.007  | -0.993   |
+|-10 | 0.00005 | 1.000 | -0.00009 | 10.000 | -0.99995 |
+
+As the MSE model becomes more confidently wrong, its loss approaches 1 but its
+gradient approaches 0. Gradient descent gets less and less signal to fix the
+mistake.
+
+Binary cross-entropy behaves differently. As the model becomes more confidently
+wrong, the loss continues to increase and the gradient remains strong. A badly
+wrong prediction therefore produces a strong signal to update the model.
+
+Binary cross-entropy is
+
+$$
+L = -\left[y\log(\hat{p}) + (1-y)\log(1-\hat{p})\right]
+$$
+
+When combined with the sigmoid, its gradient simplifies to
+
+$$
+\frac{\partial L}{\partial y} = \hat{p} - y_{\text{observed}}
+$$
+
+This gives us the two changes we need to turn our linear model into logistic
+regression: the sigmoid converts the output into a probability, and binary
+cross-entropy gives us a loss that works well with those probabilities during
+training. Everything else about gradient descent stays the same.
+
+## Training
+
+Logistical regression training follows the same process as we used for linear
+regression.
+1. Use the current $w$ and $b$ to calculate $z=wx+b$.
+2. Pass $z$ through the sigmoid to get $\hat{p}$.
+3. Use binary cross-entropy to calculate the loss.
+4. Calculate the gradient of the loss with respect to $w$ and $b$.
+5. Update $w$ and $b$ in the direction that lowers the loss.
+6. Repeat.
+
+For logistic regression with binary cross-entropy, the gradients are
+
+$$
+\frac{\partial L}{\partial w}
+=
+\frac{1}{n}\sum_{i=1}^{n}(\hat{p}_i-y_i)x_i
+$$
+
+$$
+\frac{\partial L}{\partial b}
+=
+\frac{1}{n}\sum_{i=1}^{n}(\hat{p}_i-y_i)
+$$
+
+These should look familiar. As with linear regression, the gradient tells us
+which direction to move each parameter and the learning rate determines how
+large a step we take.
+
+We can now train the logistic regression model on the same classification data
+that we used for our linear classifier.
+
+```bash
+python src/train_logistic.py \
+    --data out/class.data.tsv \
+    --lr 0.1 \
+    --epochs 5000 \
+    --out_prefix out/class.logistic
+epoch 0000 bce=0.6931 acc=0.583 w=+0.000 b=+0.000 boundary=nan
+epoch 0001 bce=0.5258 acc=0.583 w=+0.168 b=+0.008 boundary=-0.050
+epoch 0010 bce=0.4874 acc=0.667 w=+0.265 b=-0.129 boundary=0.485
+epoch 0050 bce=0.4004 acc=0.783 w=+0.367 b=-0.709 boundary=1.935
+epoch 0100 bce=0.3316 acc=0.850 w=+0.471 b=-1.286 boundary=2.729
+epoch 0200 bce=0.2574 acc=0.917 w=+0.631 b=-2.128 boundary=3.373
+epoch 0500 bce=0.1796 acc=0.967 w=+0.926 b=-3.599 boundary=3.885
+epoch 1000 bce=0.1416 acc=0.967 w=+1.208 b=-4.931 boundary=4.083
+epoch 2000 bce=0.1176 acc=0.967 w=+1.534 b=-6.422 boundary=4.187
+epoch 5000 bce=0.1006 acc=0.950 w=+2.017 b=-8.558 boundary=4.243
+wrote out/class.logistic.params.tsv
+
+python src/plot_training.py \
+    -i out/class.logistic.params.tsv \
+    -o img/class.10_outliers.data.params.training.png \
+    --columns loss \
+    --ylog \
+    --title "MSE over training"
+
+python src/plot_training.py \
+    -i out/class.10_outliers.data.params.tsv \
+    -o img/class.10_outliers.data.params.png \
+    --columns w,b \
+    --title "w and b over training"
+
+python src/plot_fit.py \
+    --data  out/class.data.tsv \
+    --w 0.045 \
+    --b 0.441 \ 
+    --residuals \
+    -o img/class.10_outliers.data.tsv.residuals.png \
+    -x x \
+    -y y
+```
+
+As training proceeds, binary cross-entropy decreases while the decision
+boundary moves toward the region separating the two classes. Once training is
+complete, $w$ and $b$ are fixed and we can use the model for inference just as
+we did with linear regression.
+
+The difference is that inference now produces a probability:
+
+$$
+x \rightarrow wx+b \rightarrow \text{sigmoid} \rightarrow \hat{p}
+$$
+
+We can then use our 0.5 decision boundary to turn that probability into a
+predicted class.
